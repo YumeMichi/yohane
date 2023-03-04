@@ -61,6 +61,7 @@ func Round(ch chan string) {
 		}
 
 		// 嘉宾选择
+		fmt.Println("嘉宾选择")
 		_, err = utils.FindAllTemplates(NormalImagePath + "friend_10.png")
 		if err == nil {
 			utils.FindClick(NormalImagePath+"friend_10.png", 2)
@@ -92,15 +93,6 @@ func Round(ch chan string) {
 				break
 			}
 
-			_, err = utils.FindAllTemplates(NormalImagePath + "complete_1.png")
-			if err == nil {
-				// 演唱会结束/未开箱
-				utils.FindClick(NormalImagePath+"complete_1.png", 1)
-				fmt.Println("演唱会结束")
-				time.Sleep(time.Second * 3)
-				break
-			}
-
 			_, err = utils.FindAllTemplates(CommonImagePath + "ok.png")
 			if err == nil {
 				// 演唱会结束/开箱
@@ -109,10 +101,29 @@ func Round(ch chan string) {
 				time.Sleep(time.Second * 10)
 				break
 			}
+
+			_, err = utils.FindAllTemplates(CommonImagePath + "click.png")
+			if err == nil {
+				// 演唱会结束/fallback
+				utils.FindClick(CommonImagePath+"click.png", 1)
+				fmt.Println("演唱会结束/fallback")
+				time.Sleep(time.Second * 10)
+				break
+			}
+
+			// _, err = utils.FindAllTemplates(NormalImagePath + "complete_1.png")
+			// if err == nil {
+			// 	// 演唱会结束/未开箱
+			// 	utils.FindClick(NormalImagePath+"complete_1.png", 1)
+			// 	fmt.Println("演唱会结束")
+			// 	time.Sleep(time.Second * 3)
+			// 	break
+			// }
 		}
 
 		if isAlive {
 			// 检查开箱子
+			fmt.Println("检查开箱子")
 			for {
 				_, err = utils.FindAllTemplates(CommonImagePath + "ok.png")
 				if err != nil {
@@ -122,7 +133,6 @@ func Round(ch chan string) {
 					break
 				}
 				utils.FindClick(CommonImagePath+"ok.png", 1)
-				fmt.Println("检查开箱子")
 				time.Sleep(time.Second * 10)
 			}
 
@@ -132,6 +142,7 @@ func Round(ch chan string) {
 			time.Sleep(time.Second * 3)
 
 			// 检查社员上限
+			fmt.Println("检查社员上限")
 			for {
 				_, err = utils.FindAllTemplates(CommonImagePath + "ok.png")
 				if err != nil {
@@ -140,7 +151,6 @@ func Round(ch chan string) {
 					break
 				}
 				utils.FindClick(CommonImagePath+"ok.png", 1)
-				fmt.Println("检查社员上限")
 				time.Sleep(time.Second * 3)
 			}
 			utils.FindClick(NormalImagePath+"complete_3.png", 1)
