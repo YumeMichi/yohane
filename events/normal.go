@@ -152,7 +152,7 @@ func Round(ch chan string) {
 						// time.Sleep(time.Second * 3)
 						break
 					}
-					time.Sleep(time.Second * 1)
+					time.Sleep(time.Second)
 					utils.FindClick(CommonImagePath+"ok.png", 1)
 				}
 			}
@@ -164,10 +164,10 @@ func Round(ch chan string) {
 				if err == nil {
 					fmt.Println("结算/歌曲数据结束")
 					utils.FindClick(NormalImagePath+"complete_2.png", 1)
-					time.Sleep(time.Second * 1)
+					time.Sleep(time.Second)
 					break
 				}
-				time.Sleep(time.Second * 1)
+				time.Sleep(time.Second)
 			}
 
 			// 检查社员上限
@@ -177,11 +177,11 @@ func Round(ch chan string) {
 				if err == nil {
 					fmt.Println("检查社员上限结束")
 					utils.FindClick(NormalImagePath+"complete_3.png", 1)
-					time.Sleep(time.Second * 1)
+					time.Sleep(time.Second)
 					break
 				}
 				utils.FindClick(CommonImagePath+"ok.png", 1)
-				time.Sleep(time.Second * 1)
+				time.Sleep(time.Second)
 			}
 
 			// 等待结算/绊数据
@@ -190,10 +190,10 @@ func Round(ch chan string) {
 				_, err = utils.FindAllTemplates(CommonImagePath + "kitsuna.png")
 				if err == nil {
 					utils.FindClick(CommonImagePath+"kitsuna.png", 1)
-					time.Sleep(time.Second * 1)
+					time.Sleep(time.Second)
 					break
 				}
-				time.Sleep(time.Second * 1)
+				time.Sleep(time.Second)
 			}
 
 			// 歌曲目标（如果存在的话）
