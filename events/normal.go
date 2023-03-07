@@ -155,6 +155,9 @@ func Round(ch chan string) {
 			utils.FindClick(NormalImagePath+"complete_3.png", 1)
 			time.Sleep(time.Second * 2)
 
+			// 等待结算/绊数据
+			utils.FindClick(CommonImagePath+"kitsuna.png", 1)
+
 			// 歌曲目标
 			_, err = utils.FindAllTemplates(CommonImagePath + "ok.png")
 			if err == nil {
@@ -164,10 +167,10 @@ func Round(ch chan string) {
 				time.Sleep(time.Second)
 				fmt.Println("结算/歌曲目标结束")
 				time.Sleep(time.Second * 2)
+				utils.FindClick(CommonImagePath+"kitsuna.png", 1)
 			}
 
 			// 等待结算/绊数据
-			utils.FindClick(CommonImagePath+"kitsuna.png", 1)
 			fmt.Println("结算/绊数据结束")
 			time.Sleep(time.Second * 2)
 
