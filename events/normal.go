@@ -139,7 +139,7 @@ func Round(ch chan string) {
 			// 等待结算/歌曲数据
 			utils.FindClick(NormalImagePath+"complete_2.png", 1)
 			fmt.Println("结算/歌曲数据结束")
-			time.Sleep(time.Second * 3)
+			time.Sleep(time.Second * 5)
 
 			// 检查社员上限
 			fmt.Println("检查社员上限")
@@ -151,7 +151,7 @@ func Round(ch chan string) {
 					break
 				}
 				utils.FindClick(CommonImagePath+"ok.png", 1)
-				time.Sleep(time.Second * 3)
+				time.Sleep(time.Second * 5)
 			}
 			utils.FindClick(NormalImagePath+"complete_3.png", 1)
 			time.Sleep(time.Second * 2)
@@ -167,6 +167,14 @@ func Round(ch chan string) {
 			// 等待结算/绊数据
 			utils.FindClick(CommonImagePath+"kitsuna.png", 1)
 			fmt.Println("结算/绊数据结束")
+			time.Sleep(time.Second * 2)
+
+			// 爱心课题
+			utils.FindClick(CommonImagePath+"keti_1.png", 1)
+			time.Sleep(time.Second)
+			utils.FindClick(CommonImagePath+"keti_2.png", 1)
+			time.Sleep(time.Second)
+			fmt.Println("结算/爱心课题结束")
 			time.Sleep(time.Second * 2)
 
 			// 每周课题
