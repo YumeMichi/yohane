@@ -13,32 +13,44 @@ var (
 )
 
 func Round(ch chan string) {
+	// 全局设定
+	effectTime := time.Now().Add(-time.Hour * 2) // 初始道具使用时间
+
 	for {
 		// 开始时间
 		startTime := time.Now()
 
-		// 存活状态
-		isAlive := true
+		// 初始设定
+		isAlive := true      // 存活状态
+		needCheckBox := true // 检查开箱
 
 		// 特效道具
-		fmt.Println("检查特效道具")
-		utils.FindClick(CommonImagePath+"effects.png", 1)
-		for {
-			_, err := utils.FindAllTemplates(CommonImagePath + "close.png")
-			if err == nil {
-				break
+		if time.Since(effectTime).Hours() > 1 {
+			fmt.Println("检查特效道具")
+			utils.FindClick(CommonImagePath+"effects.png", 1)
+			for {
+				_, err := utils.FindAllTemplates(CommonImagePath + "close.png")
+				if err == nil {
+					break
+				}
+				time.Sleep(time.Second)
 			}
+			_, err := utils.FindAllTemplates(CommonImagePath + "exp.png")
+			if err == nil {
+				utils.FindClick(CommonImagePath+"exp.png", 2)
+				time.Sleep(time.Second)
+
+				utils.FindClick(CommonImagePath+"ok.png", 1)
+
+				// 更新特效道具使用时间
+				fmt.Println("更新特效道具使用时间")
+				effectTime = time.Now()
+
+				time.Sleep(time.Second * 5)
+			}
+			utils.FindClick(CommonImagePath+"close.png", 1)
 			time.Sleep(time.Second)
 		}
-		_, err := utils.FindAllTemplates(CommonImagePath + "exp.png")
-		if err == nil {
-			utils.FindClick(CommonImagePath+"exp.png", 2)
-			time.Sleep(time.Second)
-			utils.FindClick(CommonImagePath+"ok.png", 1)
-			time.Sleep(time.Second * 5)
-		}
-		utils.FindClick(CommonImagePath+"close.png", 1)
-		time.Sleep(time.Second)
 
 		// 歌曲入口
 		utils.FindClick(NormalImagePath+"song.png", 1)
@@ -47,7 +59,7 @@ func Round(ch chan string) {
 
 		// 检查体力
 		fmt.Println("检查体力")
-		_, err = utils.FindAllTemplates(CommonImagePath + "stamina.png")
+		_, err := utils.FindAllTemplates(CommonImagePath + "stamina.png")
 		if err == nil {
 			// 体力不足
 			fmt.Println("体力不足")
@@ -86,8 +98,8 @@ func Round(ch chan string) {
 
 		// 检查演唱会状态 完成状态/存活状态
 		for {
-			fmt.Println("演唱会中，5秒后重试")
-			time.Sleep(time.Second * 5)
+			fmt.Println("演唱会中，3秒后重试")
+			time.Sleep(time.Second * 3)
 
 			_, err = utils.FindAllTemplates(CommonImagePath + "failed.png")
 			if err == nil {
@@ -101,12 +113,19 @@ func Round(ch chan string) {
 				break
 			}
 
+			_, err = utils.FindAllTemplates(CommonImagePath + "error_1.png")
+			if err == nil {
+				// 网络连接失败/重试
+				utils.FindClick(CommonImagePath+"ok.png", 1)
+				fmt.Println("网络连接失败/重试")
+				continue
+			}
+
 			_, err = utils.FindAllTemplates(CommonImagePath + "ok.png")
 			if err == nil {
 				// 演唱会结束/开箱
 				utils.FindClick(CommonImagePath+"ok.png", 1)
 				fmt.Println("演唱会结束")
-				time.Sleep(time.Second * 10)
 				break
 			}
 
@@ -115,50 +134,69 @@ func Round(ch chan string) {
 				// 演唱会结束/fallback
 				utils.FindClick(CommonImagePath+"click.png", 1)
 				fmt.Println("演唱会结束/fallback")
-				time.Sleep(time.Second * 10)
+				needCheckBox = false
 				break
 			}
 		}
 
 		if isAlive {
 			// 检查开箱子
-			fmt.Println("检查开箱子")
-			for {
-				_, err = utils.FindAllTemplates(CommonImagePath + "ok.png")
-				if err != nil {
-					fmt.Println("检查开箱子结束")
-					utils.FindClick(NormalImagePath+"complete_1.png", 1)
-					time.Sleep(time.Second * 3)
-					break
+			if needCheckBox {
+				fmt.Println("检查开箱子")
+				for {
+					_, err = utils.FindAllTemplates(CommonImagePath + "click.png")
+					if err == nil {
+						utils.FindClick(CommonImagePath+"click.png", 1)
+						fmt.Println("检查开箱子结束")
+						utils.FindClick(NormalImagePath+"complete_1.png", 1)
+						// time.Sleep(time.Second * 3)
+						break
+					}
+					time.Sleep(time.Second * 1)
+					utils.FindClick(CommonImagePath+"ok.png", 1)
 				}
-				utils.FindClick(CommonImagePath+"ok.png", 1)
-				time.Sleep(time.Second * 10)
 			}
 
 			// 等待结算/歌曲数据
-			utils.FindClick(NormalImagePath+"complete_2.png", 1)
-			fmt.Println("结算/歌曲数据结束")
-			time.Sleep(time.Second * 5)
+			fmt.Println("结算/歌曲数据")
+			for {
+				_, err = utils.FindAllTemplates(NormalImagePath + "complete_2.png")
+				if err == nil {
+					fmt.Println("结算/歌曲数据结束")
+					utils.FindClick(NormalImagePath+"complete_2.png", 1)
+					time.Sleep(time.Second * 1)
+					break
+				}
+				time.Sleep(time.Second * 1)
+			}
 
 			// 检查社员上限
 			fmt.Println("检查社员上限")
 			for {
-				_, err = utils.FindAllTemplates(CommonImagePath + "ok.png")
-				if err != nil {
+				_, err = utils.FindAllTemplates(CommonImagePath + "click.png")
+				if err == nil {
 					fmt.Println("检查社员上限结束")
-					time.Sleep(time.Second)
+					utils.FindClick(NormalImagePath+"complete_3.png", 1)
+					time.Sleep(time.Second * 1)
 					break
 				}
 				utils.FindClick(CommonImagePath+"ok.png", 1)
-				time.Sleep(time.Second * 5)
+				time.Sleep(time.Second * 1)
 			}
-			utils.FindClick(NormalImagePath+"complete_3.png", 1)
-			time.Sleep(time.Second * 2)
 
 			// 等待结算/绊数据
-			utils.FindClick(CommonImagePath+"kitsuna.png", 1)
+			fmt.Println("结算/绊数据")
+			for {
+				_, err = utils.FindAllTemplates(CommonImagePath + "kitsuna.png")
+				if err == nil {
+					utils.FindClick(CommonImagePath+"kitsuna.png", 1)
+					time.Sleep(time.Second * 1)
+					break
+				}
+				time.Sleep(time.Second * 1)
+			}
 
-			// 歌曲目标
+			// 歌曲目标（如果存在的话）
 			_, err = utils.FindAllTemplates(CommonImagePath + "ok.png")
 			if err == nil {
 				utils.FindClick(CommonImagePath+"ok.png", 1)
@@ -174,7 +212,7 @@ func Round(ch chan string) {
 			fmt.Println("结算/绊数据结束")
 			time.Sleep(time.Second * 2)
 
-			// 爱心课题
+			// 爱心课题（如果存在的话）
 			_, err = utils.FindAllTemplates(CommonImagePath + "keti_1.png")
 			if err == nil {
 				utils.FindClick(CommonImagePath+"keti_1.png", 1)
@@ -185,7 +223,7 @@ func Round(ch chan string) {
 				time.Sleep(time.Second * 2)
 			}
 
-			// 每周课题
+			// 每周课题（如果存在的话）
 			_, err = utils.FindAllTemplates(CommonImagePath + "week.png")
 			if err == nil {
 				utils.FindClick(CommonImagePath+"week.png", 1)
