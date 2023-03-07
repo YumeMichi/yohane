@@ -96,7 +96,7 @@ func FindClick(img string, click int) {
 
 	res, err = FindAllTemplates(img)
 	if err != nil {
-		fmt.Println(err.Error())
+		// fmt.Println(err.Error())
 		return
 	}
 
